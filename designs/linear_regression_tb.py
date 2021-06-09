@@ -5,7 +5,6 @@ from nmigen import *
 from nmigen.cli import main
 from nmigen.back.pysim import Simulator, Delay, Settle
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets, linear_model
@@ -39,19 +38,23 @@ print(f'Coefficients: {regr.coef_}')
 # The bias
 print(f'Bias: {regr.intercept_}')
 # The mean squared error
-print(f'Mean squared error: {mean_squared_error(diabetes_y_test, diabetes_y_pred)}')
+print(
+    f'Mean squared error: {mean_squared_error(diabetes_y_test, diabetes_y_pred)}')
 # The coefficient of determination: 1 is perfect prediction
-print(f'Coefficient of determination: {r2_score(diabetes_y_test, diabetes_y_pred)}')
+print(
+    f'Coefficient of determination: {r2_score(diabetes_y_test, diabetes_y_pred)}')
 print()
 
 print("### Building HW Testbench ###")
 
 weights = regr.coef_
 bias = regr.intercept_
-dut_linear_regression = linear_regression.LinearRegression(weights, bias, bit_depth=32)
+dut_linear_regression = linear_regression.LinearRegression(
+    weights, bias, bit_depth=32)
 
 m = Module()
 m.submodules.linear_regression = dut_linear_regression
+
 
 def process_main():
     x_test_0 = diabetes_X_test[0]
@@ -75,6 +78,7 @@ def process_main():
     print(f"y_predicted_hw: {out_fpx}")
     print(f'hw_error: {out_fpx-y_pred_0}')
     print()
+
 
 sim = Simulator(m)
 sim.add_process(process_main)

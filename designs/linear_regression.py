@@ -6,7 +6,6 @@ from math_ops import Multiplier, Adder
 from fxpmath import Fxp
 
 
-
 class LinearRegression(Elaboratable):
     def __init__(self, weights, bias, bit_depth=32):
         self.weights = weights
@@ -19,7 +18,6 @@ class LinearRegression(Elaboratable):
 
     def elaborate(self, platform):
         m = Module()
-
 
         # Make the Multipliers and output signals to do w_i*x_i
         multipliers = [Multiplier(self.bit_depth)
@@ -37,17 +35,16 @@ class LinearRegression(Elaboratable):
             w_fixed_point_base_10 = int(w_fixed_point.base_repr(10))
             m.d.comb += mult.b.eq(w_fixed_point_base_10)
 
-
         # A dookie unbalnced adder tree bc im too lazy to make a real one right now
         # Should spend some time build a balanced adder tree module at some point, not to hard
 
         # mult_sum = Array([Signal(signed(self.bit_depth)) for _ in range(len(self.weights))])
 
         adders = [Adder(self.bit_depth)
-                       for _ in range(len(self.weights))]
+                  for _ in range(len(self.weights))]
         for adder in adders:
             m.submodules += adder
-        
+
         for i in range(len(self.weights)):
             if i == 0:
                 m.d.comb += adders[i].a.eq(0)
@@ -79,5 +76,5 @@ class LinearRegression(Elaboratable):
 
 
 if __name__ == "__main__":
-    x = LinearRegression([1,2,3,4,5], 25, 32)
+    x = LinearRegression([1, 2, 3, 4, 5], 25, 32)
     main(x)
