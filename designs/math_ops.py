@@ -4,9 +4,9 @@ from nmigen import *
 class Adder(Elaboratable):
     def __init__(self, width):
         self.width = width
-        self.a = Signal(signed(width))
-        self.b = Signal(signed(width))
-        self.o = Signal(signed(width))
+        self.a = Signal(signed(width), name="a")
+        self.b = Signal(signed(width), name="b")
+        self.o = Signal(signed(width), name="o")
 
     def elaborate(self, platform):
         m = Module()
@@ -19,9 +19,9 @@ class Adder(Elaboratable):
 class Multiplier(Elaboratable):
     def __init__(self, width):
         self.width = width
-        self.a = Signal(signed(width))
-        self.b = Signal(signed(width))
-        self.o = Signal(signed(width))
+        self.a = Signal(signed(width), name="a")
+        self.b = Signal(signed(width), name="b")
+        self.o = Signal(signed(width), name="o")
         
 
     def elaborate(self, platform):

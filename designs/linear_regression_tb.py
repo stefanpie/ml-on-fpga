@@ -3,7 +3,9 @@ from fxpmath import Fxp
 
 from nmigen import *
 from nmigen.cli import main
-from nmigen.back.pysim import Simulator, Delay, Settle
+from nmigen.sim import Simulator, Delay, Settle
+from nmigen_boards.icebreaker import *
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -49,8 +51,8 @@ print("### Building HW Testbench ###")
 
 weights = regr.coef_
 bias = regr.intercept_
-dut_linear_regression = linear_regression.LinearRegression(
-    weights, bias, bit_depth=32)
+dut_linear_regression = linear_regression.LinearRegression(weights, bias, bit_depth=32)
+
 
 m = Module()
 m.submodules.linear_regression = dut_linear_regression
@@ -71,20 +73,29 @@ def process_main():
 
     output = yield dut_linear_regression.y
     out_fpx = Fxp(output, True, 32, 16, raw=True)
-    # print(out_fpx)
+    out_error = out_fpx - y_pred_0
+    out_error_percent = ((out_fpx - y_pred_0) / y_pred_0) * 100
     print("Regression Results")
     print(f"x_sample: {x_test_0}")
     print(f"y_predicted: {y_pred_0}")
     print(f"y_predicted_hw: {out_fpx}")
-    print(f'hw_error: {out_fpx-y_pred_0}')
+    print(f'hw_error: {out_error}')
+    print(f'hw_error_percent: {out_error_percent}')
     print()
 
 
 sim = Simulator(m)
 sim.add_process(process_main)
+
+traces = [*dut_linear_regression.ports()]
+
 print("Done")
 print()
 
 print("### Running Sumliation ###")
-sim.run()
-print("### Simualtion Complete ###")
+with sim.write_vcd("linear_regression_tb.vcd", "linear_regression_tb.gtkw", traces=traces):
+    sim.run()
+print("Simualtion Complete")
+print()
+
+

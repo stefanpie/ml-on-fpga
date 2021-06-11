@@ -12,9 +12,9 @@ class LinearRegression(Elaboratable):
         self.bias = bias
         self.bit_depth = bit_depth
 
-        self.x = Array([Signal(signed(self.bit_depth))
-                       for _ in range(len(self.weights))])
-        self.y = Signal(signed(bit_depth))
+        self.x = [Signal(signed(self.bit_depth), name=f"x_{i}")
+                       for i in range(len(self.weights))]
+        self.y = Signal(signed(bit_depth), name="y")
 
     def elaborate(self, platform):
         m = Module()
@@ -36,7 +36,7 @@ class LinearRegression(Elaboratable):
             m.d.comb += mult.b.eq(w_fixed_point_base_10)
 
         # A dookie unbalnced adder tree bc im too lazy to make a real one right now
-        # Should spend some time build a balanced adder tree module at some point, not to hard
+        # Should spend some time build a balanced adder tree module at some point, not too hard
 
         # mult_sum = Array([Signal(signed(self.bit_depth)) for _ in range(len(self.weights))])
 
@@ -72,9 +72,9 @@ class LinearRegression(Elaboratable):
         return m
 
     def ports(self):
-        return []
+        return [*self.x, self.y]
 
 
 if __name__ == "__main__":
-    x = LinearRegression([1, 2, 3, 4, 5], 25, 32)
-    main(x)
+    linear_regression = LinearRegression([1, 2, 3, 4, 5], 5, 32)
+    main(linear_regression, ports=linear_regression.ports())
