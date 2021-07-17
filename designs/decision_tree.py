@@ -120,7 +120,7 @@ class DecisionTreeClassifierHW(Elaboratable):
         for id, data in tree.nodes(data=True):
             if data["leaf"]:
                 leaf_reaches[id] = Signal(unsigned(1), name=f"leaf_reach_{id}")
-        pp(leaf_reaches)
+        # pp(leaf_reaches)
 
         for leaf_id in logic_paths:
             # print(leaf_id)
@@ -131,22 +131,27 @@ class DecisionTreeClassifierHW(Elaboratable):
                     path_of_signals.append(~comparisons[step[0]])
                 else:
                     path_of_signals.append(comparisons[step[0]])
-            leaf_path_expression = reduce(and_, path_of_signals)
+            # leaf_path_expression = reduce(and_, path_of_signals)
+            leaf_path_expression = Cat(path_of_signals).all()
             # print(leaf_path_expression)
             m.d.comb += leaf_reaches[leaf_id].eq(leaf_path_expression)
 
         label_selects = {}
         for label_idx in range(self.n_classes):
             label_selects[label_idx] = Signal(unsigned(1), name=f"label_select_{label_idx}")
-        pp(label_selects)
+        # pp(label_selects)
 
         for label_idx in range(self.n_classes):
             label_leaves = [leaf_id for leaf_id, leaf_data in tree.nodes(
                 data=True) if leaf_data["leaf"] and leaf_data["label_idx"] == label_idx]
             label_leaves_reach_signals = [leaf_reaches[leaf_id] for leaf_id in label_leaves]
-            label_select_expression = reduce(or_, label_leaves_reach_signals)
+            # pp(label_leaves_reach_signals)
+            # label_select_expression = reduce(or_, label_leaves_reach_signals)
+            label_select_expression = Cat(label_leaves_reach_signals).any()
+            # input("...")
             m.d.comb += label_selects[label_idx].eq(label_select_expression)
 
+        # input("...")
         # print(type(self.n_classes))
         encoder = Encoder(self.n_classes)
         m.submodules += encoder
