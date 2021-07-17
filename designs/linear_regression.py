@@ -12,20 +12,17 @@ class LinearRegression(Elaboratable):
         self.bias = bias
         self.bit_depth = bit_depth
 
-        self.x = [Signal(signed(self.bit_depth), name=f"x_{i}")
-                       for i in range(len(self.weights))]
+        self.x = [Signal(signed(self.bit_depth), name=f"x_{i}") for i in range(len(self.weights))]
         self.y = Signal(signed(bit_depth), name="y")
 
     def elaborate(self, platform):
         m = Module()
 
         # Make the Multipliers and output signals to do w_i*x_i
-        multipliers = [Multiplier(self.bit_depth)
-                       for _ in range(len(self.weights))]
+        multipliers = [Multiplier(self.bit_depth) for _ in range(len(self.weights))]
         for mult in multipliers:
             m.submodules += mult
-        mult_out_signals = Array([Signal(signed(self.bit_depth))
-                                 for _ in range(len(self.weights))])
+        mult_out_signals = Array([Signal(signed(self.bit_depth)) for _ in range(len(self.weights))])
 
         # Assign input values for multipliers
         for x_i, w, mult in zip(self.x, self.weights, multipliers):
@@ -40,8 +37,7 @@ class LinearRegression(Elaboratable):
 
         # mult_sum = Array([Signal(signed(self.bit_depth)) for _ in range(len(self.weights))])
 
-        adders = [Adder(self.bit_depth)
-                  for _ in range(len(self.weights))]
+        adders = [Adder(self.bit_depth) for _ in range(len(self.weights))]
         for adder in adders:
             m.submodules += adder
 

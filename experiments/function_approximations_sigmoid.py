@@ -6,13 +6,20 @@ from numpy.polynomial.polynomial import Polynomial as P
 
 from pprint import pprint as pp
 
-x = np.linspace(-6, 6, 100)
+from fxpmath import Fxp
+
+
+x = np.linspace(-6, 6, 1000)
+x_fpx = Fxp(x, True, 32, 16)
+
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+
 y = sigmoid(x)
 
-fig, axs = plt.subplots(1,2)
+fig, axs = plt.subplots(1, 2)
 
 axs[0].plot(x, y, label='sigmoid')
 
@@ -23,14 +30,16 @@ axs[0].plot(x, y, label='sigmoid')
 #     axs[1].plot(x, y-y_taylor(x), label=f'taylor_{degree}')
 
 
-
 for degree in range(10, 15, 1):
     def y_cheb(point):
         c = chebfit(x, sigmoid(x), degree)
         return chebval(point, c)
     pp(P(cheb2poly(chebfit(x, sigmoid(x), degree))))
+
     axs[0].plot(x, y_cheb(x), label=f'cheb_{degree}')
+    # axs[0].plot(x, y_cheb(x_fpx), label=f'cheb_fpx_{degree}')
     axs[1].plot(x, y_cheb(x)-y, label=f'cheb_{degree}')
+    # axs[1].plot(x, y_cheb(x_fpx)-y, label=f'cheb_fpx_{degree}')
 
 
 # def make_lookup_table(func, a, b, n):

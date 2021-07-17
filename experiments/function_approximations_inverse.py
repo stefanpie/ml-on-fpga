@@ -12,6 +12,7 @@ x = np.linspace(0.001, 1, 1000)
 def inverse(x):
     return 1 / x
 
+
 y = inverse(x)
 
 fig, axs = plt.subplots(1, 2)
@@ -47,7 +48,7 @@ axs[1].legend()
 # axs[0].set_xlim([-10, 10])
 # axs[1].set_xlim([-10, 10])
 
-axs[0].set_ylim([-10,50])
+axs[0].set_ylim([-10, 50])
 # axs[1].set_ylim([-5, 5])
 
 plt.show()

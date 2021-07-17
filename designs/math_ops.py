@@ -34,6 +34,7 @@ class Multiplier(Elaboratable):
         m.d.comb += o_i.eq(self.a * self.b)
         
         # slice to real output which is same as input size (smaller)
+        
         m.d.comb += self.o.eq(Cat(o_i[(self.width//2):self.width], o_i[self.width:(self.width + (self.width//2)-1)], o_i[-1]))         
         return m
     

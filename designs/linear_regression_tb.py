@@ -40,11 +40,9 @@ print(f'Coefficients: {regr.coef_}')
 # The bias
 print(f'Bias: {regr.intercept_}')
 # The mean squared error
-print(
-    f'Mean squared error: {mean_squared_error(diabetes_y_test, diabetes_y_pred)}')
+print(f'Mean squared error: {mean_squared_error(diabetes_y_test, diabetes_y_pred)}')
 # The coefficient of determination: 1 is perfect prediction
-print(
-    f'Coefficient of determination: {r2_score(diabetes_y_test, diabetes_y_pred)}')
+print(f'Coefficient of determination: {r2_score(diabetes_y_test, diabetes_y_pred)}')
 print()
 
 print("### Building HW Testbench ###")
@@ -97,5 +95,3 @@ with sim.write_vcd("linear_regression_tb.vcd", "linear_regression_tb.gtkw", trac
     sim.run()
 print("Simualtion Complete")
 print()
-
-
