@@ -165,6 +165,7 @@ class DecisionTreeClassifierHW(Elaboratable):
 
         return m
 
+    @property
     def ports(self):
         return [*self.x, self.y, self.valid]
 
@@ -188,4 +189,4 @@ if __name__ == "__main__":
     print(acc)
 
     decision_tree_classifier_hw = DecisionTreeClassifierHW(clf, 32)
-    main(decision_tree_classifier_hw, ports=decision_tree_classifier_hw.ports())
+    main(decision_tree_classifier_hw, ports=decision_tree_classifier_hw.ports)

@@ -19,6 +19,8 @@ from nmigen import *
 from nmigen.cli import main
 from nmigen.sim import Simulator, Delay, Settle
 from nmigen_boards.icebreaker import *
+from nmigen.back import verilog
+from nmigen_boards.icebreaker import ICEBreakerPlatform
 
 import decision_tree
 
@@ -55,11 +57,15 @@ print()
 
 print("### Building HW Testbench ###")
 
-BIT_DEPTH = 32
+BIT_DEPTH = 28
 clf_classes = clf.classes_.tolist()
 
 dut_decision_tree = decision_tree.DecisionTreeClassifierHW(clf, bit_depth=BIT_DEPTH)
 # print(dut_decision_tree)
+with open("decision_tree_2.v", "w") as f:
+    f.write(verilog.convert(dut_decision_tree, ports=dut_decision_tree.ports))
+
+
 
 m = Module()
 m.submodules.decision_tree = dut_decision_tree
@@ -102,7 +108,7 @@ def process_main():
 sim = Simulator(m)
 sim.add_process(process_main)
 
-traces = [*dut_decision_tree.ports()]
+traces = [*dut_decision_tree.ports]
 
 print("Done")
 print()
